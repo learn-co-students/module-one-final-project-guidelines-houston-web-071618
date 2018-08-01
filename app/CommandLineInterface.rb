@@ -9,7 +9,6 @@ class CommandLineInterface < ActiveRecord::Base
         puts "1. Most popular artist for a given country."
         puts "2. Most popular country for a given artist."
         puts "3. Most popular tracks for a given country"
-        # puts "4. How much is artist worth for a given market."
     end 
 
     def self.get_user_input
@@ -85,7 +84,7 @@ class CommandLineInterface < ActiveRecord::Base
         while [1,2,3].exclude?(query_option)
             puts "Sorry, that entry was not valid. Please enter a number 1-3"
             self.put_options
-            query_option = self.get_user_input
+            query_option = self.get_user_input.to_i
         end
     
         if query_option == 1
