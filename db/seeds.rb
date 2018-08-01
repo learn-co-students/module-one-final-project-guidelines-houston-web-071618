@@ -12,7 +12,7 @@
 
   Category.create(title: "The Beatles")
   Artist.create(name: "The Beatles")
-  response = MusixMatch.search_track(:q_artist => 'The Beatles', :page_size => 50, :f_has_lyrics => true, :s_track_rating => 'desc', f_lyrics_language: 'en' )
+  response = MusixMatch.search_track(:q_artist => 'The Beatles', :page_size => 50, :f_has_lyrics => true, :s_track_rating => 'desc', f_lyrics_language: 'en', f_track_release_group_first_release_date_min: 19620101, f_track_release_group_first_release_date_max: 19700701 )
   if response.status_code == 200
     response.each do |track|
 
