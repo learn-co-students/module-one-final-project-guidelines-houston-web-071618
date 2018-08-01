@@ -1,5 +1,5 @@
-require_relative '../config/environment'
+require_relative '../config/environment.rb'
 
 
-
-puts "HELLO WORLD"
+CommandLineInterface.run 
+# puts CommandLineInterface.does_artist_exist("Tame Impala")
