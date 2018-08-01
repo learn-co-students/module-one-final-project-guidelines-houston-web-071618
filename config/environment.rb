@@ -1,5 +1,5 @@
 require 'bundler'
-
+require '../config.rb'
 
 Bundler.require
 
