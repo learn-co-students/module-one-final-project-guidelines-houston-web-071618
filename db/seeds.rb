@@ -2,61 +2,39 @@ require_relative '../config/environment.rb'
 require 'JSON'
 require 'rest-client'
 
-# Artist.delete_all
-# Country.delete_all
-# Track.delete_all
+Artist.delete_all
+Country.delete_all
+Track.delete_all
 
+seed_countries_list = ["Argentina", "Australia", "Austria", "Belgium", "Brazil", "Canada", "China", "Czech Republic", "Denmark", "France", "Germany", "India", "Japan", "Mexico", "Netherlands", "New Zealand", "Norway", "South Africa", "Sweden", "Switzerland", "Spain", "United Kingdom", "United States"]
 
+def seed_artists
+	all_artists = LastFMApi.get_artists_array
 
-def get_artists
-    api = api_details[:MY_KEY]
-    api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=#{api}&format=json")
-    parsed_data = JSON.parse(api_data)
-    all_artists = parsed_data["artists"]["artist"]
-
-    all_artists.each do |artist_obj|
-        artist = Artist.new()
-        artist.name = artist_obj["name"]
-        artist.mbid = artist_obj["mbid"] 
-        artist.save
-    end
+	all_artists.each do |artist_hash|
+		Artist.create(artist_hash)
+	end
 end
 
-def get_countries
-    api = api_details[:MY_KEY]
-    countries_list = ["Argentina", "Australia", "Austria", "Belgium", "Brazil", "Canada", "China", "Czech Republic", "Denmark", "France", "Germany", "India", "Japan", "Mexico", "Netherlands", "New Zealand", "Norway", "South Africa", "Sweden", "Switzerland", "Spain", "United Kingdom", "United States"]
+def seed_countries(seed_countries_list)
 
-    countries_list.each do |country|
-        api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=#{country}&api_key=#{api}&format=json")
-        parsed_data = JSON.parse(api_data)
-        
-        new_country = Country.new()
-        new_country.name = country
-        new_country.top_artist_mbid = parsed_data["topartists"]["artist"][0]["mbid"]
-        new_country.save
-    end
+	seed_countries_list.each do |country|
+		top_artist_mbid_string = LastFMApi.get_top_artist_mbid_by_country(country)
+
+		Country.create(name: country, top_artist_mbid: top_artist_mbid_string)
+	end
 end
 
-def get_tracks
-    api = api_details[:MY_KEY]
-    countries_list = ["Argentina", "Australia", "Austria", "Belgium", "Brazil", "Canada", "China", "Czech Republic", "Denmark", "France", "Germany", "India", "Japan", "Mexico", "Netherlands", "New Zealand", "Norway", "South Africa", "Sweden", "Switzerland", "Spain", "United Kingdom", "United States"]
+def seed_tracks(seed_countries_list)
+	seed_countries_list.each do |country|
+		top_tracks_array = LastFMApi.get_top_tracks_by_country(country)
 
-    countries_list.each do |country|
-        api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=#{country}&api_key=#{api}&format=json")
-        parsed_data = JSON.parse(api_data)
-        all_tracks = parsed_data["tracks"]["track"]
-
-        all_tracks.each do |track_obj|
-            track = Track.new()
-            track.name = track_obj["name"]
-            track.listeners = track_obj["listeners"]
-            track.artist_mbid = track_obj["artist"]["mbid"]
-            track.country_name = country
-            track.save 
-        end
-    end
+		top_tracks_array.each do |track_hash|
+			Track.create(track_hash)
+		end
+	end		
 end
 
-get_tracks
-get_artists
-get_countries
+seed_tracks(seed_countries_list)
+seed_artists
+seed_countries(seed_countries_list)
