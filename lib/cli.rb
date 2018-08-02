@@ -46,7 +46,7 @@ class CommandLineInterface
        return 2
      else
        puts "Please select either 1 or 2"
-       prompt_answer_or_hint
+       # prompt_answer_or_hint
      end
     end
   end
@@ -87,7 +87,7 @@ class CommandLineInterface
         return true
       else
         puts "Please select either y or n"
-        repeat_or_exit
+        # repeat_or_exit
       end
     end
   end
@@ -109,7 +109,7 @@ class CommandLineInterface
     prompt_play_again
     exitted = repeat_or_exit
     if exitted == true
-      return
+      exit
     end
   end
 

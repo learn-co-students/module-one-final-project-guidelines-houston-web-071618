@@ -21,22 +21,22 @@ count = 0
 new_cli = CommandLineInterface.new
 new_cli.run
 
-response = MusixMatch.get_track_chart(:page_size => 50, :f_has_lyrics => true)
-if response.status_code == 200
-  response.each do |track|
-    lyric_response = MusixMatch.get_lyrics(track.track_id)
-    if lyric_response.status_code == 200 && lyrics = lyric_response.lyrics
-      if lyrics.lyrics_body != ""
-        blah=lyrics.lyrics_body.split("...")
-        count+=1
-        puts "*******************************************************************************************************"
-        puts "#{track.track_id}: #{track.track_name} (#{track.artist_name})"
-        puts "#{blah.first}"
-        puts "*******************************************************************************************************"
-      end
-    end
-  end
-end
+# response = MusixMatch.get_track_chart(:page_size => 50, :f_has_lyrics => true)
+# if response.status_code == 200
+#   response.each do |track|
+#     lyric_response = MusixMatch.get_lyrics(track.track_id)
+#     if lyric_response.status_code == 200 && lyrics = lyric_response.lyrics
+#       if lyrics.lyrics_body != ""
+#         blah=lyrics.lyrics_body.split("...")
+#         count+=1
+#         puts "*******************************************************************************************************"
+#         puts "#{track.track_id}: #{track.track_name} (#{track.artist_name})"
+#         puts "#{blah.first}"
+#         puts "*******************************************************************************************************"
+#       end
+#     end
+#   end
+# end
 
 # response = MusixMatch.get_lyrics('3799553')
 # if response.status_code == 200 && lyrics = response.lyrics
