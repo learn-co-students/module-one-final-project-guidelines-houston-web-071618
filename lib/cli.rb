@@ -2,6 +2,12 @@ class CommandLineInterface
 
   @@score = 0
 
+  def show_high_score
+    stars
+    puts "    High Score : #{HighScore.first.high_score}"
+    stars
+  end
+
   def greet
     puts "\nWelcome to Lyrics Trivia, get ready to test your music knowledge!\n\nLet's play.\n\nEnter a number (1-6) based on the following options:\n1) The Beatles\n2) Justin Bieber\n3) Beyonce/Destiny's Child\n4) Today's Hits\n5) 2000's Pop\n6) 90's Pop\n\n"
   end
@@ -61,7 +67,7 @@ class CommandLineInterface
   def show_lyrics(game_song)
     puts "\nHere's some lyrics:"
     stars
-    puts "#{game_song.lyrics[0..75].colorize(:light_blue)}\n"
+    puts "#{game_song.lyrics[0..100].colorize(:yellow)}\n"
     stars
   end
 
@@ -100,7 +106,7 @@ class CommandLineInterface
   def show_all_lyrics(song)
     @@hint += 5
     stars
-    puts "\n#{song.lyrics.colorize(:light_blue)}\n"
+    puts "\n#{song.lyrics.colorize(:yellow)}\n"
     stars
   end
 
@@ -112,11 +118,11 @@ class CommandLineInterface
     parsed_song = song.title.split(' (')
     parsed_song = parsed_song.first
     if parsed_song.downcase == answer.downcase
-      puts "\nCongrats! You got it right!\nAnswer is: \n#{parsed_song.colorize(:light_blue)} - #{song.artist.name.colorize(:light_blue)}"
+      puts "\nCongrats! You got it right!\nAnswer is: \n#{parsed_song.colorize(:yellow)} - #{song.artist.name.colorize(:yellow)}"
       @@score = @@score + 10 - @@hint
       puts "Your score is now #{@@score}"
     else
-      puts "\nSorry, wrong answer.\nAnswer is: \n#{parsed_song.colorize(:light_blue)} - #{song.artist.name.colorize(:light_blue)} "
+      puts "\nSorry, wrong answer.\nAnswer is: \n#{parsed_song.colorize(:yellow)} - #{song.artist.name.colorize(:yellow)} "
       puts "\nYour score is #{@@score}"
     end
   end
@@ -162,6 +168,12 @@ class CommandLineInterface
     prompt_play_again
     exitted = repeat_or_exit
     if exitted == true
+      if HighScore.first.high_score < @@score
+        HighScore.first.update(high_score: @@score)
+        stars
+        puts "YOU EARNED THE NEW HIGH SCORE : #{HighScore.first.high_score}"
+        stars
+      end
       exit
     end
   end

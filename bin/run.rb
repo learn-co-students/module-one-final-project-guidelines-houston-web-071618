@@ -19,6 +19,7 @@ MusixMatch::API::Base.api_key = "d8f358f97300518be509afbb7bcc131a"
 count = 0
 
 new_cli = CommandLineInterface.new
+new_cli.show_high_score
 new_cli.run
 
 # response = MusixMatch.get_track_chart(:page_size => 50, :f_has_lyrics => true)
