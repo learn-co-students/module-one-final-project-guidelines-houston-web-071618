@@ -3,20 +3,38 @@ class CommandLineInterface
   @@score = 0
 
   def greet
-    puts "\nWelcome to Lyrics Trivia, get ready to test your music knowledge!\n\nLet's play.\n\nEnter a topic from the following options:\n- The Beatles\n- Justin Bieber\n- Beyonce/Destiny's Child\n- Today's Hits\n- 2000's Pop\n- 90's Pop\n\n"
+    puts "\nWelcome to Lyrics Trivia, get ready to test your music knowledge!\n\nLet's play.\n\nEnter a number (1-6) based on the following options:\n1) The Beatles\n2) Justin Bieber\n3) Beyonce/Destiny's Child\n4) Today's Hits\n5) 2000's Pop\n6) 90's Pop\n\n"
   end
 
   def gets_user_input
     gets.chomp
   end
 
+
   def find_category(input)
-    if Category.find_by(title: input) == nil
+    case input
+    when "1"
+      category_input= "The Beatles"
+    when "2"
+      category_input= "Justin Bieber"
+    when "3"
+      category_input= "Beyonce/Destiny's Child"
+    when "4"
+      category_input= "Today's Hits"
+    when "5"
+      category_input= "2000's Pop"
+    when "6"
+      category_input= "90's Pop"
+    else
+      category_input= "blah"
+    end
+
+    if Category.find_by(title: category_input) == nil
       puts "Sorry, that option is not available yet. Please try again from the options given."
       input = gets_user_input
       find_category(input)
     else
-      Category.find_by(title: input)
+      Category.find_by(title: category_input)
     end
   end
 
@@ -41,15 +59,14 @@ class CommandLineInterface
   end
 
   def show_lyrics(game_song)
-    puts game_song.title
     puts "\nHere's some lyrics:"
     stars
-    puts "#{game_song.lyrics[0..75].colorize(:blue)}\n"
+    puts "#{game_song.lyrics[0..75].colorize(:light_blue)}\n"
     stars
   end
 
   def prompt_answer_or_hint
-    puts "1) To guess the song now select 1.\n2) To get more lyrics select 2. Warning: this option is a 5 point penalty to your potential increase.\n"
+    puts "1) To guess the song now select 1.\n2) To get more lyrics select 2. NOTE: this option is a 5 point penalty to your potential increase.\n"
     while user_input = gets.chomp
      case user_input
      when "1"
@@ -63,7 +80,7 @@ class CommandLineInterface
   end
 
   def prompt_answer_or_hint_title(song)
-    puts "1) To guess the song select 1. \n2) To get part of the song title select 2.\n"
+    puts "1) To guess the song select 1. \n2) To get part of the song title select 2. NOTE: this option is an additional 3 point penalty to your potential increase.\n"
     while user_input = gets.chomp
      case user_input
      when "1"
@@ -83,7 +100,7 @@ class CommandLineInterface
   def show_all_lyrics(song)
     @@hint += 5
     stars
-    puts "\n#{song.lyrics.colorize(:blue)}\n"
+    puts "\n#{song.lyrics.colorize(:light_blue)}\n"
     stars
   end
 
@@ -95,11 +112,11 @@ class CommandLineInterface
     parsed_song = song.title.split(' (')
     parsed_song = parsed_song.first
     if parsed_song.downcase == answer.downcase
-      puts "\nCongrats! You got it right!\n"
+      puts "\nCongrats! You got it right!\nAnswer is: \n#{parsed_song.colorize(:light_blue)} - #{song.artist.name.colorize(:light_blue)}"
       @@score = @@score + 10 - @@hint
       puts "Your score is now #{@@score}"
     else
-      puts "\nSorry, wrong answer.\nAnswer is: \n#{parsed_song.colorize(:blue)}"
+      puts "\nSorry, wrong answer.\nAnswer is: \n#{parsed_song.colorize(:light_blue)} - #{song.artist.name.colorize(:light_blue)} "
       puts "\nYour score is #{@@score}"
     end
   end
