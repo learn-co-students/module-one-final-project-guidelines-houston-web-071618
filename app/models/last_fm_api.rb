@@ -83,4 +83,17 @@ class LastFMApi
 			return "Error"
 		end 
 	end
+	
+	def self.get_artist_info_from_api(artist_name)
+	  api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=#{artist_name}&api_key=#{api_details[:MY_KEY]}&format=json")
+	  parsed_data = JSON.parse(api_data)
+		artist = parsed_data["artist"]
+		
+		{
+				name: artist["name"],
+				mbid: artist["mbid"],
+				listeners: artist["listeners"],
+				cost: 0.105 * artist["listeners"].to_f + 1414
+		}
+	end
 end

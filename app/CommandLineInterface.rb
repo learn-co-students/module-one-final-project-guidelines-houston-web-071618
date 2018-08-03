@@ -10,9 +10,10 @@ class CommandLineInterface < ActiveRecord::Base
 	end 
 
 	def self.put_options
-		puts "1. Most popular artist for a given country."
+		puts "1. Most popular artists for a given country."
 		puts "2. Most popular country for a given artist."
 		puts "3. Most popular tracks for a given country"
+		puts "4. Estimate artist cost to book"
 		puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 		puts "Enter choice number below:"
 	end 
@@ -109,9 +110,9 @@ class CommandLineInterface < ActiveRecord::Base
 		self.put_options
 		query_option = self.get_user_input.to_i
 			
-		while [1,2,3].exclude?(query_option)
+		while [1,2,3,4].exclude?(query_option)
 			system "clear"
-			puts "Sorry, that entry was not valid. Please enter a number 1-3"
+			puts "Sorry, that entry was not valid. Please enter a number 1-4"
 			puts "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 			self.put_options
 			query_option = self.get_user_input.to_i
@@ -123,6 +124,8 @@ class CommandLineInterface < ActiveRecord::Base
 			PopularCountriesForArtist.run_option_two
 		elsif query_option == 3
 			PopularTracksByCountry.run_option_three
+		elsif query_option == 4
+			EstimateArtistCost.run_option_four
 		else
 			puts "there was an error"
 		end
