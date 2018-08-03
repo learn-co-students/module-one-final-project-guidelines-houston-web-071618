@@ -23,12 +23,14 @@ class LastFMApi
 		parsed_data = JSON.parse(api_data)
 
 		contains_error = APIValidator.check_response(parsed_data)
-
+		
 		if !contains_error 
 			parsed_data["artists"]["artist"].map do | artist | 
 				{
 						name: artist["name"],
-						mbid: artist["mbid"]
+						mbid: artist["mbid"],
+						listeners: artist["listeners"],
+						cost: 0.105 * artist["listeners"].to_f + 1414
 				}
 			end
 		else 
@@ -36,15 +38,24 @@ class LastFMApi
 		end 
 	end
 
-	def self.get_top_artist_mbid_by_country(country)
+	def self.get_top_artists_by_country(country)
 		api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=#{country}&api_key=#{api_details[:MY_KEY]}&format=json")
 
-		parsed_country_hash = JSON.parse(api_data)
+		parsed_countries = JSON.parse(api_data)
 
-		contains_error = APIValidator.check_response(parsed_country_hash)
+		contains_error = APIValidator.check_response(parsed_countries)
 
 		if !contains_error 
-			parsed_country_hash["topartists"]["artist"][0]["mbid"]
+			countries_artist_array = parsed_countries["topartists"]["artist"]
+			
+			countries_artist_array.map do |artist_hash|
+				{
+					country_name: country,
+					top_artist_mbid: artist_hash["mbid"],
+					artist_name: artist_hash["name"],
+					listeners: artist_hash["listeners"]
+				}
+			end
 		else 
 			return "Error"
 		end 

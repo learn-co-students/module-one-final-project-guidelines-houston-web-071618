@@ -12,16 +12,22 @@ def seed_artists
 	all_artists = LastFMApi.get_artists_array
 
 	all_artists.each do |artist_hash|
-		Artist.create(artist_hash)
+		if !SQLValidator.check_if_exists_in_artists(artist_hash["name"])
+			Artist.create(artist_hash)
+		end
 	end
 end
 
 def seed_countries(seed_countries_list)
 
 	seed_countries_list.each do |country|
-		top_artist_mbid_string = LastFMApi.get_top_artist_mbid_by_country(country)
+		top_artists_array = LastFMApi.get_top_artists_by_country(country)
 
-		Country.create(name: country, top_artist_mbid: top_artist_mbid_string)
+		top_artists_array.each do |country_hash|
+			if !SQLValidator.check_if_exists_in_countries(country_hash["country_name"])
+				Country.create(country_hash)
+			end
+		end
 	end
 end
 
@@ -30,7 +36,9 @@ def seed_tracks(seed_countries_list)
 		top_tracks_array = LastFMApi.get_top_tracks_by_country(country)
 
 		top_tracks_array.each do |track_hash|
-			Track.create(track_hash)
+			if !SQLValidator.check_if_exists_in_tracks(track_hash["name"])
+				Track.create(track_hash)
+			end
 		end
 	end		
 end
