@@ -1,7 +1,52 @@
-# require "musix_match"
-#
-# MusixMatch::API::Base.api_key = "d8f358f97300518be509afbb7bcc131a"
-#
+def seed_musixmatch_data_artist(category_name , array_of_hash_for_api_gem)
+  Category.create(title: category_name) #category_id=1
+  array_of_hash_for_api_gem.each do |hash|
+    response = MusixMatch.search_track(hash)
+    if response.status_code == 200
+      response.each do |track|
+        lyric_response = MusixMatch.get_lyrics(track.track_id)
+        if lyric_response.status_code == 200 && lyrics = lyric_response.lyrics
+          if lyrics.lyrics_body != ""
+            desired_lyrics=lyrics.lyrics_body.split("...")
+            if Artist.all.pluck(:name).include?(track.artist_name)
+              desired_artist = Artist.find_by(name: track.artist_name)
+              Song.create({title: track.track_name , musix_match_track_id:track.track_id , lyrics:desired_lyrics.first , artist_id:desired_artist.id , category_id:1})
+            else
+              new_artist = Artist.create(name: track.artist_name)
+              Song.create({title: track.track_name , musix_match_track_id:track.track_id , lyrics:desired_lyrics.first, artist_id:new_artist.id , category_id:1})
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+def seed_musixmatch_data_chart(category_name , array_of_hash_for_api_gem)
+  Category.create(title: category_name) #category_id=1
+  array_of_hash_for_api_gem.each do |hash|
+    response = MusixMatch.get_track_chart(hash)
+    if response.status_code == 200
+      response.each do |track|
+        lyric_response = MusixMatch.get_lyrics(track.track_id)
+        if lyric_response.status_code == 200 && lyrics = lyric_response.lyrics
+          if lyrics.lyrics_body != ""
+            desired_lyrics=lyrics.lyrics_body.split("...")
+            if Artist.all.pluck(:name).include?(track.artist_name)
+              desired_artist = Artist.find_by(name: track.artist_name)
+              Song.create({title: track.track_name , musix_match_track_id:track.track_id , lyrics:desired_lyrics.first , artist_id:desired_artist.id , category_id:1})
+            else
+              new_artist = Artist.create(name: track.artist_name)
+              Song.create({title: track.track_name , musix_match_track_id:track.track_id , lyrics:desired_lyrics.first, artist_id:new_artist.id , category_id:1})
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+
 # Category.create(title: "The Beatles") #category_id=1
 # response = MusixMatch.search_track(:q_artist => 'The Beatles', :page_size => 50, :f_has_lyrics => true, :s_track_rating => 'desc', f_lyrics_language: 'en', f_track_release_group_first_release_date_min: 19620101, f_track_release_group_first_release_date_max: 19700701 )
 # if response.status_code == 200
