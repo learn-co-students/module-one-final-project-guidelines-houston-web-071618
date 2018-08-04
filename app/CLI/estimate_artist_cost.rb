@@ -5,7 +5,7 @@ class EstimateArtistCost
       artist_obj = Artist.find_by name: artist_name
       
       if artist_obj["cost"] == nil
-        artist_obj["cost"] = 0.105 * artist["listeners"].to_f + 1414
+        artist_obj["cost"] = 0.105 * artist_obj["listeners"].to_f + 1414
       end
     else
       api_result = LastFMApi.get_artist_info_from_api(artist_name)
