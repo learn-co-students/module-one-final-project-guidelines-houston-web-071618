@@ -1,28 +1,22 @@
 class EstimateArtistCost
   def self.find_cost(artist_name)
-    
+
     if CommandLineInterface.does_artist_exist(artist_name)
-      artist_obj = Artist.find_by name: artist_name
-      
-      if artist_obj["cost"] == nil
-        artist_obj["cost"] = 0.105 * artist_obj["listeners"].to_f + 1414
+      artist_hash = Artist.find_by name: artist_name
+
+      if artist_hash["cost"] == nil
+        Valuator.add_cost_data(artist_hash)
       end
     else
       api_result = LastFMApi.get_artist_info_from_api(artist_name)
-      
+
       if api_result != "Error"
-        artist_obj = Artist.create(api_result)
+        artist_hash = Artist.create(api_result)
       end
     end
-  
-    formatted = "$" + artist_obj["cost"].to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
-    
+
+    formatted = "$" + artist_hash["cost"].to_s.reverse.gsub(/...(?=.)/,'\&,').reverse
+
     puts formatted
-  end
-  
-  def self.run_option_four
-    puts "Please enter an artist name -- no misspellings allowed."
-    artist_name = CommandLineInterface.get_user_input
-    self.find_cost(artist_name)
   end
 end

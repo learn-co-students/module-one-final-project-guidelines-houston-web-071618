@@ -1,4 +1,4 @@
-require 'JSON'
+require 'json'
 require 'rest-client'
 require_relative '../../config.rb'
 
@@ -11,11 +11,11 @@ class LastFMApi
 
 		contains_error = APIValidator.check_response(parsed_data)
 
-		if !contains_error 
+		if !contains_error
 			parsed_data["artist"]["name"]
-		else 
+		else
 			return "Error"
-		end 
+		end
 	end
 
 	def self.get_artists_array
@@ -23,77 +23,68 @@ class LastFMApi
 		parsed_data = JSON.parse(api_data)
 
 		contains_error = APIValidator.check_response(parsed_data)
-		
-		if !contains_error 
-			parsed_data["artists"]["artist"].map do | artist | 
+
+		if !contains_error
+			parsed_data["artists"]["artist"].map do | artist |
 				{
-						name: artist["name"],
-						mbid: artist["mbid"],
-						listeners: artist["listeners"],
-						cost: 0.105 * artist["listeners"].to_f + 1414
+					name: artist["name"],
+					mbid: artist["mbid"],
+					listeners: artist["listeners"]
 				}
 			end
-		else 
+		else
 			return "Error"
-		end 
+		end
 	end
 
-	def self.get_top_artists_by_country(country)
-		api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=geo.gettopartists&country=#{country}&api_key=#{api_details[:MY_KEY]}&format=json")
-
-		parsed_countries = JSON.parse(api_data)
-
-		contains_error = APIValidator.check_response(parsed_countries)
-
-		if !contains_error 
-			countries_artist_array = parsed_countries["topartists"]["artist"]
-			
-			countries_artist_array.map do |artist_hash|
-				{
-					country_name: country,
-					top_artist_mbid: artist_hash["mbid"],
-					artist_name: artist_hash["name"],
-					listeners: artist_hash["listeners"]
-				}
-			end
-		else 
-			return "Error"
-		end 
-	end
-
-	def self.get_top_tracks_by_country(country)
-		api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=geo.gettoptracks&country=#{country}&api_key=#{api_details[:MY_KEY]}&format=json")
+	def self.get_top_tracks_by_artist(artist_hash)
+		api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=#{artist_hash[:name]}&api_key=#{api_details[:MY_KEY]}&format=json")
 
 		parsed_tracks = JSON.parse(api_data)
 
 		contains_error = APIValidator.check_response(parsed_tracks)
 
-		if !contains_error 
-			tracks_array = parsed_tracks["tracks"]["track"]
-		
+		if !contains_error
+			tracks_array = parsed_tracks["toptracks"]["track"]
+
 			tracks_array.map do |track_hash|
 				{
-						name: track_hash["name"],
-						listeners: track_hash["listeners"],
-						artist_mbid: track_hash["artist"]["mbid"],
-						country_name: country
+					name: track_hash["name"],
+					listeners: track_hash["listeners"],
+					artist_id: artist_hash[:id]
 				}
 			end
-		else 
+		else
 			return "Error"
-		end 
+		end
 	end
-	
+
 	def self.get_artist_info_from_api(artist_name)
 	  api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist=#{artist_name}&api_key=#{api_details[:MY_KEY]}&format=json")
 	  parsed_data = JSON.parse(api_data)
 		artist = parsed_data["artist"]
-		
+
 		{
-				name: artist["name"],
-				mbid: artist["mbid"],
-				listeners: artist["listeners"],
-				cost: 0.105 * artist["listeners"].to_f + 1414
+			name: artist["name"],
+			mbid: artist["mbid"],
+			listeners: artist["listeners"]
 		}
+	end
+
+	def self.get_similar_artists(artist_name)
+		api_data = RestClient.get("http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=#{artist_name}&api_key=#{api_details[:MY_KEY]}&format=json")
+		parsed_data = JSON.parse(api_data)
+
+		contains_error = APIValidator.check_response(parsed_data)
+
+		if !contains_error
+			artists_array = parsed_data["similarartists"]["artist"]
+
+			artists_array.map do |artist_hash|
+				{
+					#need to find or create arist here so can use DB ID to reference search artist and foreign artist
+				}
+			end
+		end
 	end
 end
