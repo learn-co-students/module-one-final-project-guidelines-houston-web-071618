@@ -1,0 +1,13 @@
+current directory: /Users/dereksilva/Dev/Labs/module-one-final-project-guidelines-houston-web-071618/vendor/cache/ruby/2.3.0/gems/json-2.1.0/ext/json
+/Users/dereksilva/.rvm/rubies/ruby-2.3.3/bin/ruby -r ./siteconf20180806-60130-122k39a.rb extconf.rb
+creating Makefile
+
+current directory: /Users/dereksilva/Dev/Labs/module-one-final-project-guidelines-houston-web-071618/vendor/cache/ruby/2.3.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/dereksilva/Dev/Labs/module-one-final-project-guidelines-houston-web-071618/vendor/cache/ruby/2.3.0/gems/json-2.1.0/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/dereksilva/Dev/Labs/module-one-final-project-guidelines-houston-web-071618/vendor/cache/ruby/2.3.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" install
